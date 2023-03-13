@@ -3,12 +3,21 @@ class UsersController < ApplicationController
 
     # REGISTER
     def create
-        @user = User.create(user_params)
-        if @user.valid?
-            @token = encode_token({ user_id: @user.id })
-            render json: { user: @user, token: @token }
+        testeUsername = User.find_by(username: params[:username])
+        if params[:username] == ""
+            render json: { error: "O nome de usuário não pode ser vazio" }
+            return
+        elsif params[:username] == testeUsername[:username]
+            render json: { error: "Esse nome de usuário já está sendo utilizado" }
+            return
         else
-            render json: { error: "failed to create user" }
+            @user = User.create(user_params)
+            if @user.valid?
+                @token = encode_token({ user_id: @user.id })
+                render json: { user: @user, token: @token }
+            else
+                render json: { error: "Falha ao criar o usuário" }
+            end
         end
     end
 
@@ -28,7 +37,7 @@ class UsersController < ApplicationController
             token = encode_token({ user_id: @user.id })
             render json: { user: @user, token: token }
         else
-            render json: { error: "Invalid username or password" }
+            render json: { error: "Usuário ou senha inválidos" }
         end
     end
 
@@ -39,7 +48,7 @@ class UsersController < ApplicationController
     private
 
     def user_params
-        params.permit(:username, :password, :name)
+        params.permit(:username, :password, :name, :email)
     end
 
 end
