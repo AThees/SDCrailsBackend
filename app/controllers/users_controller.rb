@@ -7,7 +7,7 @@ class UsersController < ApplicationController
         if params[:username] == ""
             render json: { error: "O nome de usuário não pode ser vazio" }
             return
-        elsif params[:username] == testeUsername[:username]
+        elsif testeUsername and params[:username] == testeUsername[:username]
             render json: { error: "Esse nome de usuário já está sendo utilizado" }
             return
         else
