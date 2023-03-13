@@ -12,6 +12,14 @@ class UsersController < ApplicationController
         end
     end
 
+    # DELETE
+
+    def destroy
+        @user = User.find_by(id: params[:id])
+        @user.destroy
+        render json: { message: "Usuário deletado com sucesso" }
+    end
+
     # LOGGING IN
     def login
         @user = User.find_by(username: params[:username])
